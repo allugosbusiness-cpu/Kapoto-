@@ -31,7 +31,7 @@ const menuItems = [
     price: "$6.00",
     spicy: false,
     popular: false,
-    image: "/Annotation 2026-02-05 173930.jpg",
+    image: "/bhifi.jpg",
   },
   {
     name: "traditional platters",
@@ -135,3 +135,4 @@ export default function Menu() {
     </section>
   );
 }
+
