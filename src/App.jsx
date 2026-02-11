@@ -21,6 +21,7 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
+    <>
     <section style={{ display: "none" }}>
       <main>
       <h1>Kapoto Restaurant - Best Restaurant in Zimbabwe</h1>
@@ -29,6 +30,7 @@ function App() {
        </p>
       </main>
     </section>
+    
     <div className="min-h-screen bg-amber-950 text-amber-50 overflow-hidden">
       <Navbar scrolled={scrolled} />
       <Hero />
@@ -39,7 +41,7 @@ function App() {
       <Testimonials />
       <Footer />
     </div>
-    
+    </>
   );
 }
 
