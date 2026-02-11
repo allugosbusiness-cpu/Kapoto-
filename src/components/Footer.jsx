@@ -34,7 +34,16 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-amber-100 mb-4 sm:mb-6 max-w-xs mx-auto sm:mx-0 text-sm sm:text-base">
-              Experience authentic African cuisine with modern dining excellence. Call us on 0773372682 for deliveries.
+              Located No.2 Chelmsford Road  
+              Avondale
+            </p>
+            <p className="text-amber-100 mb-4 sm:mb-6 max-w-xs mx-auto sm:mx-0 text-sm sm:text-base">
+              Shop D129, Long chen Plaza
+              Belvedere
+            </p>
+            <p className="text-amber-100 mb-4 sm:mb-6 max-w-xs mx-auto sm:mx-0 text-sm sm:text-base">
+              Call +263 773 372 682 / +263 772 720 984 
+              muzalilian@gmail.com
             </p>
             
             <div className="flex justify-center sm:justify-start space-x-3 sm:space-x-4">

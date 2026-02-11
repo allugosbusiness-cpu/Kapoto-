@@ -3,7 +3,7 @@ import { Check, Star } from "lucide-react";
 const plans = [
   {
     name: "Family Dinner",
-    price: "50",
+    price: "10",
     description: "Perfect for families (4-6 people)",
     features: [
       "4-6 guest seating",
@@ -18,7 +18,7 @@ const plans = [
   },
   {
     name: "Party Package",
-    price: "100",
+    price: "20",
     description: "Ideal for celebrations (10-25 people)",
     features: [
       "10-25 guest seating",
@@ -34,7 +34,7 @@ const plans = [
   },
   {
     name: "Corporate Event",
-    price: "150",
+    price: "15",
     description: "For large gatherings (25+ people)",
     features: [
       "25+ guest capacity",
