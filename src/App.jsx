@@ -7,6 +7,7 @@ import Reservations from "./components/Pricing";
 import Testimonials from "./components/Testimonials";
 import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +42,7 @@ function App() {
       <Testimonials />
       <Footer />
     </div>
+    <SpeedInsights />
     </>
   );
 }
