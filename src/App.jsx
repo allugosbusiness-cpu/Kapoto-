@@ -21,6 +21,14 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
+    <section style={{ display: "none" }}>
+      <main>
+      <h1>Kapoto Restaurant - Best Restaurant in Zimbabwe</h1>
+       <p>
+       Kapoto Restaurant is one of the top restaurants in zimbabwe, offering delicious traditional and continental meals.
+       </p>
+      </main>
+    </section>
     <div className="min-h-screen bg-amber-950 text-amber-50 overflow-hidden">
       <Navbar scrolled={scrolled} />
       <Hero />
@@ -31,6 +39,7 @@ function App() {
       <Testimonials />
       <Footer />
     </div>
+    
   );
 }
 
