@@ -43,7 +43,7 @@ export default function AboutUs() {
             </p>
             <p className="text-amber-100 text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed min-h-20">
               <TypewriterText 
-                text="Our head chef, Chef Messi, spent years traveling across Africa, learning from local communities and mastering the traditional cooking methods that have been passed down for generations. Every dish at Kapoto tells a tale of African heritage, culture, and pride."
+                text="Our chefs spent years traveling across Africa, learning from local communities and mastering the traditional cooking methods that have been passed down for generations. Every dish at Kapoto tells a tale of African heritage, culture, and pride."
                 speed={20}
                 delay={2000}
               />
@@ -130,3 +130,4 @@ export default function AboutUs() {
     </section>
   );
 }
+
