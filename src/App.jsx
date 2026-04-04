@@ -31,7 +31,7 @@ function App() {
       </main>
     </section>
     
-    <div className="min-h-screen bg-amber-950 text-amber-50 overflow-hidden">
+    <div className="min-h-screen bg-amber-850 text-amber-50 overflow-hidden">
       <Navbar scrolled={scrolled} />
       <Hero />
       <AboutUs />
