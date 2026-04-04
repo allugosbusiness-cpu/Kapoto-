@@ -73,6 +73,14 @@ const menuItems = [
     popular: true,
     image: "/maheu.jpg",
   },
+   {
+    name: "Madora",
+    description: "Tasty and crunchy with every bite",
+    price: "$1.00",
+    spicy: true,
+    popular: true,
+    image: "/ass.jpeg",
+  },
 ];
 
 export default function Menu() {
