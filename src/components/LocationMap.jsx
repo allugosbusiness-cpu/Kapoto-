@@ -21,6 +21,7 @@ const branches = [
     phone: "+263 773 372 682",
     mapUrl: "https://maps.google.com/?q=Vintcent+Avenue+and+Plantation+Drive+opposite+Mutare+Polytechnic+Zimbabwe",
     coords: { lat: -18.978718, lng: 32.679474 },
+    zoom: 0.015,
   },
 ];
 
@@ -75,7 +76,7 @@ export default function LocationMap() {
                   style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.5)" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${branch.coords.lng - 0.01}%2C${branch.coords.lat - 0.01}%2C${branch.coords.lng + 0.01}%2C${branch.coords.lat + 0.01}&layer=mapnik&marker=${branch.coords.lat}%2C${branch.coords.lng}`}
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${branch.coords.lng - (branch.zoom || 0.01)}%2C${branch.coords.lat - (branch.zoom || 0.01)}%2C${branch.coords.lng + (branch.zoom || 0.01)}%2C${branch.coords.lat + (branch.zoom || 0.01)}&layer=mapnik&marker=${branch.coords.lat}%2C${branch.coords.lng}`}
                 />
                 <div className="absolute inset-0 bg-amber-950/10 pointer-events-none" />
               </div>
