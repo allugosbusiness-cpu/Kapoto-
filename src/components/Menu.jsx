@@ -4,15 +4,15 @@ import { useState } from "react";
 import FullMenuModal from "./FullMenuModal";
 
 const menuItems = [
-  { name: "traditional chicken", description: "Fragrant African chicken cooked with love", price: "$6.00", spicy: true, popular: true, image: "/road.jpg" },
-  { name: "Kariba bream", description: "Grilled breams with zesty African fresh herbs", price: "$7.00 to $15.00", spicy: true, popular: false, image: "/fish.jpg" },
+  { name: "traditional chicken", description: "Fragrant African chicken cooked with love", price: "$6.00", spicy: true, popular: true, image: "/road.png" },
+  { name: "Kariba bream", description: "Grilled breams with zesty African fresh herbs", price: "$7.00 to $15.00", spicy: true, popular: false, image: "/fish.png" },
   { name: "chimkuyu beef", description: "Tender dried beef stewed with aromatic African vegetables", price: "$6.00", spicy: true, popular: true, image: "/Annotation 2026-02-05 173816.jpg" },
-  { name: "beef stew with covo", description: "Traditional power combo that will melt your taste-buds", price: "$6.00", spicy: false, popular: false, image: "/bhifi.jpg" },
-  { name: "traditional platters", description: "Well crafted platters with the pure intention to take you back.", price: "$10.00", spicy: true, popular: true, image: "/Annotation 2026-02-05 174030.jpg" },
+  { name: "beef stew with covo", description: "Traditional power combo that will melt your taste-buds", price: "$6.00", spicy: false, popular: false, image: "/bhifi.png" },
+  { name: "traditional platters", description: "Well crafted platters with the pure intention to take you back.", price: "$10.00", spicy: true, popular: true, image: "/Annotation 2026-02-05 174030.png" },
   { name: "Starch", description: "traditional grains crushed for your satisfication", price: "$1.00 to $3.00", spicy: true, popular: false, image: "/Annotation 2026-02-05 174109.jpg" },
-  { name: "Mutsine", description: "carefully cooked traditional veges", price: "$1.00", spicy: false, popular: false, image: "/Annotation 2026-02-05 174153.jpg" },
-  { name: "Zondo", description: "Tender beef feet cooked with african herbs", price: "$5.00", spicy: true, popular: true, image: "/Annotation 2026-02-05 174228.jpg" },
-  { name: "Beverages", description: "Refreshing and soothing drinks to wash it all away", price: "$1.00 to $5.00", spicy: false, popular: true, image: "/maheu.jpg" },
+  { name: "Mutsine", description: "carefully cooked traditional veges", price: "$1.00", spicy: false, popular: false, image: "/Annotation 2026-02-05 174153.png" },
+  { name: "Zondo", description: "Tender beef feet cooked with african herbs", price: "$5.00", spicy: true, popular: true, image: "/Annotation 2026-02-05 174228.png" },
+  { name: "Beverages", description: "Refreshing and soothing drinks to wash it all away", price: "$1.00 to $5.00", spicy: false, popular: true, image: "/maheu.png" },
   { name: "Madora", description: "Tasty and crunchy with every bite", price: "$1.00", spicy: true, popular: true, image: "/ass.jpeg" },
 ];
 
@@ -115,7 +115,6 @@ export default function Menu() {
         </div>
       </div>
 
-      {/* Full Menu Modal */}
       <FullMenuModal isOpen={showFullMenu} setIsOpen={setShowFullMenu} />
     </section>
   );

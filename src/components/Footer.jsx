@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-2 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start space-x-2 mb-4">
               <div className="relative">
-                <img src="/ass.jpg" alt="Kapoto Logo" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full" />
+                <img src="/ass.png" alt="Kapoto Logo" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full" />
                 <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-md" />
               </div>
               <span className="text-xl sm:text-2xl font-bold">

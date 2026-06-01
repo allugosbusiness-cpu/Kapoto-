@@ -20,7 +20,7 @@ export default function Navbar({ scrolled }) {
           <a href="#home" className="flex items-center space-x-2 group cursor-pointer">
             <div className="relative">
               <img
-                src="/ass.jpg"
+                src="/ass.png"
                 alt="KapotoRestaurant"
                 className="w-7 h-7 sm:w-9 sm:h-9 rounded-full group-hover:scale-110 transition-transform duration-300"
               />
