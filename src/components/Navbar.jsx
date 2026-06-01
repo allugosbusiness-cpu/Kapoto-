@@ -1,0 +1,96 @@
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import { useCart } from "../CartContent";
+
+export default function Navbar({ scrolled }) {
+  const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+  const { totalItems } = useCart();
+
+  return (
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-amber-950/80 backdrop-blur-xl border-b border-amber-700/50 shadow-2xl shadow-amber-950/50"
+          : "bg-transparent backdrop-blur-sm"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16 md:h-20">
+          {/* Logo */}
+          <a href="#home" className="flex items-center space-x-2 group cursor-pointer">
+            <div className="relative">
+              <img
+                src="/ass.jpg"
+                alt="KapotoRestaurant"
+                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full group-hover:scale-110 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-md group-hover:blur-xl transition-all duration-300" />
+            </div>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold">
+              <span className="text-amber-50">Kapoto</span>
+              <span className="text-amber-400">Restaurant</span>
+            </span>
+          </a>
+
+          {/* Nav Links - Desktop */}
+          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
+            {["About", "Menu", "Features", "Reservations", "Testimonials"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="relative px-4 py-2 text-gray-300 hover:text-amber-300 text-sm lg:text-base font-medium transition-all duration-300 group"
+              >
+                {item}
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300 rounded-full" />
+              </a>
+            ))}
+          </div>
+
+          {/* Cart indicator + Mobile toggle */}
+          <div className="flex items-center gap-3">
+            {/* Cart badge on desktop */}
+            {totalItems > 0 && (
+              <div className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-amber-800/50 border border-amber-700/50 rounded-full text-sm text-amber-300">
+                <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                {totalItems} item{totalItems !== 1 ? "s" : ""}
+              </div>
+            )}
+
+            <button
+              className="md:hidden p-2 text-gray-300 hover:text-white rounded-lg hover:bg-amber-800/50 transition-all duration-200"
+              onClick={() => setMobileMenuIsOpen((prev) => !prev)}
+            >
+              {mobileMenuIsOpen ? (
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              ) : (
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          mobileMenuIsOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-amber-950/95 backdrop-blur-xl border-t border-amber-800/50 shadow-2xl">
+          <div className="px-4 py-4 space-y-2">
+            {["About", "Menu", "Features", "Reservations", "Testimonials"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setMobileMenuIsOpen(false)}
+                className="block px-4 py-3 text-gray-300 hover:text-amber-300 hover:bg-amber-900/50 rounded-lg transition-all duration-200 text-sm font-medium"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
