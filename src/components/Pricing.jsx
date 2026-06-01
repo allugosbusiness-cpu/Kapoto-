@@ -1,5 +1,7 @@
 import { Check, Star, Sparkles } from "lucide-react";
 
+const WHATSAPP_NUMBER = "263772682771";
+
 const plans = [
   {
     name: "Family Dinner",
@@ -23,6 +25,25 @@ const plans = [
     mostPopular: false,
   },
 ];
+
+function getWhatsAppUrl(plan) {
+  const msg = `🍖 *Kapoto Restaurant - Event Booking Request*
+═══════════════════════
+
+*📋 Package:* ${plan.name}
+*💰 Price:* $${plan.price} USD per person
+*👥 Capacity:* ${plan.description}
+
+*✨ Features Included:*
+${plan.features.map(f => `  ✅ ${f}`).join('\n')}
+
+═══════════════════════
+⏰ *I'd like to book this package!*
+📍 *Location:* Kapoto Restaurant, Zimbabwe
+
+_Kindly contact me with availability and next steps._`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
 
 export default function Reservations() {
   return (
@@ -63,7 +84,6 @@ export default function Reservations() {
                   : "border-amber-700/30 hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/10"
               }`}
             >
-              {/* Gradient hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
 
               {plan.mostPopular && (
@@ -105,16 +125,19 @@ export default function Reservations() {
                 ))}
               </ul>
 
-              <button
-                className={`relative w-full py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold transition-all duration-300 mt-auto overflow-hidden group/btn ${
+              <a
+                href={getWhatsAppUrl(plan)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`relative w-full py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold transition-all duration-300 mt-auto overflow-hidden group/btn text-center block ${
                   plan.mostPopular
                     ? "bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 hover:shadow-lg hover:shadow-amber-500/30"
                     : "bg-amber-900/50 border border-amber-700/50 text-amber-50 hover:bg-amber-800/50 hover:border-amber-500/50"
                 }`}
               >
-                <span className="relative z-10">Reserve Now</span>
+                <span className="relative z-10">Reserve Now via WhatsApp</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
-              </button>
+              </a>
             </div>
           ))}
         </div>
@@ -122,7 +145,7 @@ export default function Reservations() {
         <div className="mt-8 sm:mt-12 text-center">
           <p className="text-amber-100/70 text-base">
             Looking for custom catering?{" "}
-            <a href="https://wa.me/263772682771" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline decoration-amber-500/30 hover:decoration-amber-400 transition-all">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline decoration-amber-500/30 hover:decoration-amber-400 transition-all">
               Contact our event team →
             </a>
           </p>
