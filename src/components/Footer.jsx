@@ -1,8 +1,17 @@
 import { Globe, Camera, Mail, MapPin, Phone, Clock, Sparkles, Star, Menu, Calendar, Gift, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import LegalModal from "./LegalModal";
 
 const WHATSAPP = "https://wa.me/263772682771";
 
 export default function Footer() {
+  const [legalPage, setLegalPage] = useState(null);
+  const [legalOpen, setLegalOpen] = useState(false);
+
+  const openLegal = (page) => {
+    setLegalPage(page);
+    setLegalOpen(true);
+  };
   return (
     <footer className="relative border-t border-amber-700/50 bg-gradient-to-b from-amber-950 to-amber-950/95 overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
@@ -116,11 +125,11 @@ export default function Footer() {
                   Legal
                 </h3>
                 <ul className="space-y-2">
-                  <li><a href="#" className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block">Privacy</a></li>
-                  <li><a href="#" className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block">Terms</a></li>
-                  <li><a href="#" className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block">Cookie Policy</a></li>
-                  <li><a href="#" className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block">Accessibility</a></li>
-                  <li><a href="#" className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block">Compliance</a></li>
+                  <li><button onClick={() => openLegal("Privacy")} className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block text-left bg-transparent border-0 cursor-pointer">Privacy</button></li>
+                  <li><button onClick={() => openLegal("Terms")} className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block text-left bg-transparent border-0 cursor-pointer">Terms</button></li>
+                  <li><button onClick={() => openLegal("Cookie Policy")} className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block text-left bg-transparent border-0 cursor-pointer">Cookie Policy</button></li>
+                  <li><button onClick={() => openLegal("Accessibility")} className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block text-left bg-transparent border-0 cursor-pointer">Accessibility</button></li>
+                  <li><button onClick={() => openLegal("Compliance")} className="text-amber-300/60 hover:text-amber-300 transition-all duration-200 text-xs sm:text-sm hover:translate-x-1 inline-block text-left bg-transparent border-0 cursor-pointer">Compliance</button></li>
                 </ul>
               </div>
             </div>
@@ -142,6 +151,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      <LegalModal page={legalPage} isOpen={legalOpen} setIsOpen={setLegalOpen} />
     </footer>
   );
 }
