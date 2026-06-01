@@ -19,9 +19,9 @@ const branches = [
     name: "Mutare Branch",
     address: "Vintcent Ave & Plantation Drive, opposite Mutare Polytechnic, Mutare",
     phone: "+263 773 372 682",
-    mapUrl: "https://maps.google.com/?q=Vintcent+Avenue+and+Plantation+Drive+opposite+Mutare+Polytechnic+Zimbabwe",
-    coords: { lat: -18.978718, lng: 32.679474 },
-    zoom: 0.015,
+    mapUrl: "https://www.google.com/maps/place/Kapoto+Restaurent+Mutare/@-18.9786766,32.6795542,17z",
+    coords: { lat: -18.9786766, lng: 32.6795542 },
+    zoom: 0.008,
   },
 ];
 
