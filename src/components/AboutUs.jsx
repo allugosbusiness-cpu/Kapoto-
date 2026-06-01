@@ -59,9 +59,9 @@ export default function AboutUs() {
                   <img src="/moms.png" alt="Restaurant Interior" className="w-full h-full object-fill group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                {/* Top right - stretched to fill */}
+                {/* Top right - fully displayed */}
                 <div className="relative h-40 sm:h-56 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
-                  <img src="/Annotation 2026-02-05 174709.png" alt="Chef Preparing Food" className="w-full h-full object-stretch group-hover:scale-110 transition-transform duration-500" />
+                  <img src="/Annotation 2026-02-05 174709.png" alt="Chef Preparing Food" className="w-full h-full object-contain bg-amber-950 group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 {/* Bottom full width - stretched to fill */}
