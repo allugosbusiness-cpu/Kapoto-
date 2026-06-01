@@ -17,9 +17,9 @@ const branches = [
   },
   {
     name: "Mutare Branch",
-    address: "Vintcent Avenue, opposite Mutare Polytechnic, Mutare",
+    address: "Vintcent Ave & Plantation Drive, opposite Mutare Polytechnic, Mutare",
     phone: "+263 773 372 682",
-    mapUrl: "https://maps.google.com/?q=Vintcent+Avenue+opposite+Mutare+Polytechnic+Zimbabwe",
+    mapUrl: "https://maps.google.com/?q=Vintcent+Avenue+and+Plantation+Drive+opposite+Mutare+Polytechnic+Zimbabwe",
     coords: { lat: -18.978718, lng: 32.679474 },
   },
 ];
