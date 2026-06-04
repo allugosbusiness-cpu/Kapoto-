@@ -1,9 +1,32 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Sparkles, ChefHat, Heart, Users } from "lucide-react";
 import AfricaMap from "./AfricaMap";
 
 export default function AboutUs() {
   const sectionRef = useRef(null);
+  const carouselImages = [
+    "/1.png", "/2.png", "/3.png", "/4.png",
+    "/moms.png", "/bhifi.png", "/mabhonzo.jpg",
+    "/INTERIOR.png", "/Annotation 2026-02-05 174709.png",
+    "/bones.jpg", "/fish.png", "/maheu.png", "/sadza.jpg"
+  ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [nextImageIndex, setNextImageIndex] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentImageIndex(prev => (prev + 1) % carouselImages.length);
+        setNextImageIndex(prev => (prev + 1) % carouselImages.length);
+        setIsTransitioning(false);
+      }, 600);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [carouselImages.length]);
 
   return (
     <section ref={sectionRef} id="about" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 relative african-mudcloth section-warm overflow-hidden">
@@ -74,30 +97,75 @@ export default function AboutUs() {
             </div>
           </div>
 
-          {/* Right side - Images */}
+          {/* Right side - Images Carousel */}
           <div className="order-1 lg:order-2">
             <div className="relative">
               <div className="absolute -top-6 -left-6 w-20 h-20 opacity-10 pointer-events-none hidden md:block">
                 <AfricaMap size={80} className="text-amber-500" />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                {/* Top left */}
+                {/* Top left - Carousel 1 */}
                 <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
-                  <img src="/moms.png" alt="Restaurant Interior" className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" />
+                  <div className="relative w-full h-full">
+                    <img
+                      src={carouselImages[currentImageIndex]}
+                      alt="Restaurant"
+                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
+                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                      } group-hover:scale-110`}
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                {/* Top right */}
+
+                {/* Top right - Carousel 2 */}
                 <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
-                  <img src="/Annotation 2026-02-05 174709.png" alt="Chef" className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" />
+                  <div className="relative w-full h-full">
+                    <img
+                      src={carouselImages[(currentImageIndex + 1) % carouselImages.length]}
+                      alt="Dishes"
+                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
+                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                      } group-hover:scale-110`}
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                {/* Bottom */}
+
+                {/* Bottom - Carousel 3 */}
                 <div className="relative h-36 sm:h-52 md:h-64 lg:h-72 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500 col-span-2">
-                  <img src="/INTERIOR.png" alt="African Dishes" className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" />
+                  <div className="relative w-full h-full">
+                    <img
+                      src={carouselImages[(currentImageIndex + 2) % carouselImages.length]}
+                      alt="African Food"
+                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
+                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                      } group-hover:scale-110`}
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-2 right-2 opacity-20">
                     <AfricaMap size={20} className="text-amber-500" />
                   </div>
+                </div>
+
+                {/* Image indicators */}
+                <div className="col-span-2 flex justify-center gap-2 mt-4">
+                  {carouselImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setCurrentImageIndex(idx);
+                        setNextImageIndex((idx + 1) % carouselImages.length);
+                      }}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === currentImageIndex
+                          ? "bg-amber-500 w-6"
+                          : "bg-amber-500/30 w-1.5 hover:bg-amber-500/60"
+                      }`}
+                      aria-label={`Go to image ${idx + 1}`}
+                    />
+                  ))}
                 </div>
               </div>
               <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl animate-pulse" />
