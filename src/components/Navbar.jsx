@@ -27,9 +27,9 @@ export default function Navbar({ scrolled }) {
           <a href="#home" className="flex items-center space-x-2 group cursor-pointer">
             <div className="relative">
               <img
-                src="/ass.png"
+                src="/kapoto-logo.svg"
                 alt="KapotoRestaurant"
-                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full group-hover:scale-110 transition-transform duration-300"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full group-hover:scale-110 transition-transform duration-300"
               />
               <div className="absolute inset-0 rounded-full bg-amber-500/30 blur-md group-hover:blur-xl transition-all duration-300" />
             </div>
@@ -38,7 +38,7 @@ export default function Navbar({ scrolled }) {
               fontWeight: 800,
             }}>
               <span className="text-white">Kapoto</span>
-              <span className="text-white">Restaurant</span>
+              <span className="text-amber-300 ml-1">Restaurant</span>
             </span>
           </a>
 

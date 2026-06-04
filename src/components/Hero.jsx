@@ -128,6 +128,21 @@ export default function Hero() {
           <span className="w-2 h-2 border border-amber-500/50 rotate-45" />
         </div>
 
+        {/* Logo Image - Prominently displayed */}
+        <div className="mb-6 animate-in slide-in-from-bottom duration-700 delay-100">
+          <div className="relative inline-block">
+            <img
+              src="/kapoto-logo.svg"
+              alt="Kapoto Restaurant Logo"
+              className="w-32 h-32 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 xl:w-64 xl:h-64 object-contain drop-shadow-2xl"
+              style={{
+                filter: "drop-shadow(0 0 30px rgba(217, 119, 6, 0.4))",
+              }}
+            />
+            <div className="absolute inset-0 rounded-full bg-amber-500/10 blur-3xl -z-10" />
+          </div>
+        </div>
+
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-1 animate-in slide-in-from-bottom duration-700 leading-tight" style={{fontFamily: "'Fredoka', sans-serif", fontWeight: 900, letterSpacing: '-0.02em'}}>
           <span className="text-amber-50 block">Welcome to</span>
         </h1>
