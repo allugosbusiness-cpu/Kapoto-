@@ -105,7 +105,7 @@ export default function AboutUs() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {/* Top left - Carousel 1 */}
-                <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
+                <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
                   <div className="relative w-full h-full">
                     <img
                       src={carouselImages[currentImageIndex]}
@@ -121,7 +121,7 @@ export default function AboutUs() {
                 </div>
 
                 {/* Top right - Carousel 2 */}
-                <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
+                <div className="relative h-40 sm:h-56 md:h-72 lg:h-80 rounded-lg sm:rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500">
                   <div className="relative w-full h-full">
                     <img
                       src={carouselImages[(currentImageIndex + 1) % carouselImages.length]}
@@ -137,7 +137,7 @@ export default function AboutUs() {
                 </div>
 
                 {/* Bottom - Carousel 3 */}
-                <div className="relative h-36 sm:h-52 md:h-64 lg:h-72 rounded-lg sm:rounded-xl overflow-hidden border border-amber-700/30 group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500 col-span-2">
+                <div className="relative h-36 sm:h-52 md:h-64 lg:h-72 rounded-lg sm:rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-500 col-span-2">
                   <div className="relative w-full h-full">
                     <img
                       src={carouselImages[(currentImageIndex + 2) % carouselImages.length]}
