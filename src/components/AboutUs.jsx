@@ -110,7 +110,7 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[currentImageIndex]}
                       alt="Restaurant"
-                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                      className={`w-full h-full object-contain object-bottom bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
                         isTransitioning 
                           ? "opacity-0 scale-95 blur-sm" 
                           : "opacity-100 scale-100 blur-0"
@@ -126,7 +126,7 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[(currentImageIndex + 1) % carouselImages.length]}
                       alt="Dishes"
-                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                      className={`w-full h-full object-contain object-bottom bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
                         isTransitioning 
                           ? "opacity-0 scale-95 blur-sm" 
                           : "opacity-100 scale-100 blur-0"
@@ -142,7 +142,7 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[(currentImageIndex + 2) % carouselImages.length]}
                       alt="African Food"
-                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                      className={`w-full h-full object-contain object-bottom bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
                         isTransitioning 
                           ? "opacity-0 scale-95 blur-sm" 
                           : "opacity-100 scale-100 blur-0"
