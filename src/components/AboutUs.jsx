@@ -22,8 +22,8 @@ export default function AboutUs() {
         setCurrentImageIndex(prev => (prev + 1) % carouselImages.length);
         setNextImageIndex(prev => (prev + 1) % carouselImages.length);
         setIsTransitioning(false);
-      }, 600);
-    }, 3500);
+      }, 1500);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, [carouselImages.length]);
@@ -110,9 +110,11 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[currentImageIndex]}
                       alt="Restaurant"
-                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
-                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-                      } group-hover:scale-110`}
+                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                        isTransitioning 
+                          ? "opacity-0 scale-95 blur-sm" 
+                          : "opacity-100 scale-100 blur-0"
+                      } group-hover:scale-105`}
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -124,9 +126,11 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[(currentImageIndex + 1) % carouselImages.length]}
                       alt="Dishes"
-                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
-                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-                      } group-hover:scale-110`}
+                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                        isTransitioning 
+                          ? "opacity-0 scale-95 blur-sm" 
+                          : "opacity-100 scale-100 blur-0"
+                      } group-hover:scale-105`}
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -138,9 +142,11 @@ export default function AboutUs() {
                     <img
                       src={carouselImages[(currentImageIndex + 2) % carouselImages.length]}
                       alt="African Food"
-                      className={`w-full h-full object-cover object-center transition-all duration-700 ${
-                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-                      } group-hover:scale-110`}
+                      className={`w-full h-full object-contain bg-amber-950/60 p-2 transition-all duration-1200 ease-in-out ${
+                        isTransitioning 
+                          ? "opacity-0 scale-95 blur-sm" 
+                          : "opacity-100 scale-100 blur-0"
+                      } group-hover:scale-105`}
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
