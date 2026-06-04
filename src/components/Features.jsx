@@ -1,4 +1,5 @@
 import { UtensilsCrossed, ParkingCircle, Flame, Smile, Users, Sparkles } from "lucide-react";
+import AfricaMap from "./AfricaMap";
 
 const features = [
   { title: "Outdoor Dining", description: "Enjoy your meal in our beautiful outdoor seating area with fresh air and a relaxing ambiance. Perfect for family gatherings and special occasions.", icon: UtensilsCrossed, imagePosition: "left" },
@@ -10,9 +11,19 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-16 sm:py-20 px-10 sm:px-6 lg:px-8 relative bg-gradient-to-b from-amber-900 via-amber-950 to-amber-900 overflow-hidden">
+    <section id="features" className="py-16 sm:py-20 px-10 sm:px-6 lg:px-8 relative great-zimbabwe overflow-hidden">
+      <div className="kente-band-top" />
+      <div className="kente-band-bottom" />
+
+      {/* Africa map floating backgrounds */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-40 left-10 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-10 right-5 africa-float" style={{animationDelay: "-3s"}}>
+          <AfricaMap size={55} className="text-amber-500/4" />
+        </div>
+        <div className="absolute bottom-10 left-5 africa-float-reverse" style={{animationDelay: "-7s"}}>
+          <AfricaMap size={45} className="text-amber-500/3" />
+        </div>
+        <div className="absolute top-40 left-10 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-40 right-10 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
@@ -23,15 +34,24 @@ export default function Features() {
             <Sparkles className="w-5 h-5 text-amber-400" />
             <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-500" />
           </div>
-          <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            <span className="bg-gradient-to-b from-amber-100 to-amber-300 bg-clip-text text-transparent">
-              Why Choose
+          <div className="ndbele-diamond justify-center mb-4">
+            <span className="text-amber-500/60 text-2xl font-light">◆</span>
+          </div>
+          <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6" style={{
+            fontFamily: "'Fredoka', system-ui, sans-serif",
+            fontWeight: 800,
+          }}>
+            <span className="text-slate-900">
+              ◆ Why Choose ◆
             </span>
             <br />
-            <span className="bg-gradient-to-b from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              Kapoto Restaurant
+            <span className="text-slate-900">
+              Kapoto Restaurant ◆
             </span>
           </h2>
+          <div className="african-separator justify-center mt-2">
+            <span className="african-separator-dot" />
+          </div>
         </div>
 
         <div className="space-y-16 sm:space-y-20 lg:space-y-32">
@@ -43,10 +63,19 @@ export default function Features() {
                 {/* Icon Section */}
                 <div className="flex-1 w-full">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl sm:rounded-2xl transition-all duration-500 group-hover:scale-105" />
-                    <div className="relative bg-amber-950/50 backdrop-blur-sm border border-amber-700/50 rounded-xl sm:rounded-2xl p-8 sm:p-12 overflow-hidden group-hover:border-amber-500/50 transition-all duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-amber-600/10 rounded-xl sm:rounded-2xl transition-all duration-500 group-hover:scale-105" />
+                    <div className="relative african-frame bg-amber-900/30 backdrop-blur-sm border border-amber-800/50 rounded-xl sm:rounded-2xl p-8 sm:p-12 overflow-hidden group-hover:border-amber-600/50 transition-all duration-300 flex items-center justify-center">
                       <IconComponent className="w-24 h-24 sm:w-32 sm:h-32 text-amber-400 group-hover:text-amber-300 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                      {/* African pattern overlay */}
+                      <div className="absolute inset-0 opacity-5 pointer-events-none">
+                        <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
+                          <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle cx="10" cy="10" r="1" fill="#d97706" />
+                          </pattern>
+                          <rect width="100%" height="100%" fill="url(#dots)" />
+                        </svg>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </div>
                   </div>
                 </div>
@@ -54,10 +83,13 @@ export default function Features() {
                 {/* Text Section */}
                 <div className="flex-1 w-full">
                   <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
-                    <h3 className="text-4xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-amber-50 group-hover:text-amber-300 transition-colors duration-300">
+                    <h3 className="text-4xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-slate-900 group-hover:text-slate-800 transition-colors duration-300" style={{
+                      fontFamily: "'Fredoka', system-ui, sans-serif",
+                      fontWeight: 700,
+                    }}>
                       {feature.title}
                     </h3>
-                    <p className="text-amber-100/70 text-base sm:text-lg leading-relaxed">
+                    <p className="text-slate-800 text-base sm:text-lg leading-relaxed">
                       {feature.description}
                     </p>
                   </div>

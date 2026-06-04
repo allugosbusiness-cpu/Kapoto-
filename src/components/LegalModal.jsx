@@ -144,17 +144,20 @@ export default function LegalModal({ page, isOpen, setIsOpen }) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="relative w-full max-w-2xl max-h-[85vh] bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <Dialog.Panel className="relative w-full max-w-2xl max-h-[85vh] bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
               {/* Header */}
               <div className="relative p-6 border-b border-amber-700/30 flex-shrink-0">
                 <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 p-1 hover:bg-amber-800/50 rounded-full transition-all">
-                  <X className="w-5 h-5 text-amber-400" />
+                  <X className="w-5 h-5 text-amber-50" />
                 </button>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-                    <IconComponent className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 rounded-lg bg-amber-700 flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 text-amber-50" />
                   </div>
-                  <Dialog.Title className="text-xl font-bold text-amber-300">
+                  <Dialog.Title className="text-xl font-bold text-amber-50" style={{
+                    fontFamily: "'Fredoka', system-ui, sans-serif",
+                    fontWeight: 700,
+                  }}>
                     {legal.title}
                   </Dialog.Title>
                 </div>
@@ -170,10 +173,10 @@ export default function LegalModal({ page, isOpen, setIsOpen }) {
                   return (
                     <div key={i} className="mb-6 last:mb-0">
                       {heading && (
-                        <h4 className="text-amber-400 font-semibold text-sm mb-2">{heading}</h4>
+                        <h4 className="text-amber-300 font-semibold text-sm mb-2">{heading}</h4>
                       )}
                       {body.map((line, j) => (
-                        <p key={j} className={`text-amber-100/70 text-sm leading-relaxed ${line.startsWith("•") ? "ml-4" : ""}`}>
+                        <p key={j} className={`text-amber-50/70 text-sm leading-relaxed ${line.startsWith("•") ? "ml-4" : ""}`}>
                           {line}
                         </p>
                       ))}
@@ -184,7 +187,7 @@ export default function LegalModal({ page, isOpen, setIsOpen }) {
 
               {/* Footer */}
               <div className="p-4 border-t border-amber-700/30 flex-shrink-0">
-                <p className="text-xs text-amber-500/60 text-center">
+                <p className="text-xs text-amber-400/50 text-center">
                   Last updated: June 2026 | Questions? Email muzalilian@gmail.com
                 </p>
               </div>

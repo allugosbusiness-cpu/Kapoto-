@@ -1,5 +1,6 @@
 import { Check, Star, Sparkles, User, MapPin, FileText, X } from "lucide-react";
 import { useState } from "react";
+import AfricaMap from "./AfricaMap";
 
 const WHATSAPP_NUMBER = "263772682771";
 
@@ -60,50 +61,56 @@ _Kindly contact me with availability and next steps._`;
   };
 
   return (
-    <section id="reservations" className="py-16 sm:py-20 px-10 sm:px-6 lg:px-8 relative bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 overflow-hidden">
+    <section id="reservations" className="py-16 sm:py-20 px-10 sm:px-6 lg:px-8 relative african-mudcloth overflow-hidden">
+      <div className="kente-band-top" />
+      <div className="kente-band-bottom" />
+
       {/* Booking Form Modal */}
       {showForm && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowForm(null)} />
-          <div className="relative bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/50 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl animate-in slide-in-from-bottom duration-300">
+          <div className="relative bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/30 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl animate-in slide-in-from-bottom duration-300">
             <button onClick={() => setShowForm(null)} className="absolute top-4 right-4 p-1 hover:bg-amber-800/50 rounded-full transition-all">
-              <X className="w-5 h-5 text-amber-400" />
+              <X className="w-5 h-5 text-amber-50" />
             </button>
 
-            <h3 className="text-xl font-bold text-amber-300 mb-2">Reserve {showForm.name}</h3>
-            <p className="text-amber-100/70 text-sm mb-6">${showForm.price} USD/person — {showForm.description}</p>
+            <h3 className="text-xl font-bold text-amber-50 mb-2" style={{
+              fontFamily: "'Fredoka', system-ui, sans-serif",
+              fontWeight: 700,
+            }}>Reserve {showForm.name}</h3>
+            <p className="text-amber-200 text-sm mb-6">${showForm.price} USD/person — {showForm.description}</p>
 
             <div className="space-y-3">
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Your Name *"
-                  className="w-full pl-10 pr-4 py-3 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-amber-900/50 border border-amber-700/50 rounded-lg text-amber-50 placeholder-amber-400/50 focus:outline-none focus:border-amber-500 transition-all"
                 />
               </div>
 
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="Your Location"
-                  className="w-full pl-10 pr-4 py-3 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-amber-900/50 border border-amber-700/50 rounded-lg text-amber-50 placeholder-amber-400/50 focus:outline-none focus:border-amber-500 transition-all"
                 />
               </div>
 
               <div className="relative">
-                <FileText className="absolute left-3 top-3.5 w-4 h-4 text-amber-500" />
+                <FileText className="absolute left-3 top-3.5 w-4 h-4 text-amber-400" />
                 <textarea
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Additional notes"
                   rows={2}
-                  className="w-full pl-10 pr-4 py-3 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all resize-none"
+                  className="w-full pl-10 pr-4 py-3 bg-amber-900/50 border border-amber-700/50 rounded-lg text-amber-50 placeholder-amber-400/50 focus:outline-none focus:border-amber-500 transition-all resize-none"
                 />
               </div>
             </div>
@@ -119,9 +126,19 @@ _Kindly contact me with availability and next steps._`;
         </div>
       )}
 
+      {/* Africa map floating backgrounds */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 africa-float" style={{animationDelay: "-2s"}}>
+          <AfricaMap size={65} className="text-amber-500/4" />
+        </div>
+        <div className="absolute bottom-20 left-10 africa-float-reverse" style={{animationDelay: "-6s"}}>
+          <AfricaMap size={50} className="text-amber-500/3" />
+        </div>
+        <div className="absolute top-1/3 left-1/2 africa-float-slow" style={{animationDelay: "-10s"}}>
+          <AfricaMap size={30} className="text-amber-500/3" />
+        </div>
         <div className="absolute top-40 right-20 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-40 left-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-40 left-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -131,18 +148,27 @@ _Kindly contact me with availability and next steps._`;
             <Sparkles className="w-5 h-5 text-amber-400" />
             <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-500" />
           </div>
-          <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            <span className="bg-gradient-to-b from-amber-200 to-amber-300 bg-clip-text text-transparent">
-              Event Packages
+          <div className="ndbele-diamond justify-center mb-4">
+            <span className="text-amber-500/60 text-2xl font-light">◆</span>
+          </div>
+          <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6" style={{
+            fontFamily: "'Fredoka', system-ui, sans-serif",
+            fontWeight: 800,
+          }}>
+            <span className="text-slate-900">
+              ◆ Event Packages ◆
             </span>
             <br />
-            <span className="bg-gradient-to-b from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              Zimbabwe's Finest Braai
+            <span className="text-slate-900">
+              Zimbabwe's Finest Braai ◆
             </span>
           </h2>
-          <p className="text-amber-100/70 text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-slate-800 text-base sm:text-lg max-w-2xl mx-auto">
             Experience authentic African dining in the heart of Zimbabwe. All packages include premium service and traditional African cuisine.
           </p>
+          <div className="african-separator justify-center mt-6">
+            <span className="african-separator-dot" />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-6">
@@ -151,43 +177,46 @@ _Kindly contact me with availability and next steps._`;
               key={key}
               className={`relative group bg-gradient-to-b ${plan.mostPopular ? "from-amber-800/40 to-amber-900/40" : "from-amber-900/30 to-amber-950/30"} backdrop-blur-sm border rounded-xl sm:rounded-2xl p-6 sm:p-8 transition-all duration-500 flex flex-col h-full ${
                 plan.mostPopular
-                  ? "border-amber-500/70 shadow-2xl shadow-amber-500/20 lg:scale-105 hover:shadow-amber-500/30"
-                  : "border-amber-700/30 hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/10"
+                  ? "border-amber-600/50 shadow-2xl shadow-amber-500/20 lg:scale-105 hover:shadow-amber-500/30 african-frame"
+                  : "border-amber-800/50 hover:border-amber-600/50 hover:shadow-xl hover:shadow-amber-500/10 african-frame"
               }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
 
               {plan.mostPopular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-                  <div className="flex items-center space-x-1 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full text-xs sm:text-sm font-semibold shadow-xl text-amber-950">
-                    <Star className="w-3 h-3 fill-amber-950" />
+                  <div className="flex items-center space-x-1 px-4 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-amber-50 rounded-full text-xs sm:text-sm font-semibold shadow-xl">
+                    <Star className="w-3 h-3 fill-amber-300" />
                     <span>Most Popular</span>
                   </div>
                 </div>
               )}
 
               <div className="text-center mb-6 sm:mb-8 relative z-10">
-                <h3 className="text-xl sm:text-2xl font-bold mb-2 text-amber-50 group-hover:text-amber-300 transition-colors duration-300">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2 text-slate-900 group-hover:text-slate-800 transition-colors duration-300" style={{
+                  fontFamily: "'Fredoka', system-ui, sans-serif",
+                  fontWeight: 700,
+                }}>
                   {plan.name}
                 </h3>
-                <p className="text-amber-200/70 text-xs sm:text-sm mb-3 sm:mb-4">
+                <p className="text-slate-800 text-xs sm:text-sm mb-3 sm:mb-4">
                   {plan.description}
                 </p>
                 <div className="flex items-baseline justify-center">
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent group-hover:scale-110 inline-block transition-transform duration-300">
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-300 group-hover:scale-110 inline-block transition-transform duration-300">
                     ${plan.price}
                   </span>
-                  <span className="text-amber-300/70 ml-1 sm:ml-2 text-sm sm:text-base">USD / person</span>
+                  <span className="text-slate-800 ml-1 sm:ml-2 text-sm sm:text-base">USD / person</span>
                 </div>
               </div>
 
               <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-1 relative z-10">
                 {plan.features.map((feature, featureKey) => (
                   <li key={featureKey} className="flex items-start space-x-2 sm:space-x-3 group/feature">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-amber-400/20 to-orange-400/20 flex items-center justify-center mt-0.5 group-hover/feature:scale-110 transition-transform">
-                      <Check className="w-3 h-3 text-amber-400" />
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-700/50 flex items-center justify-center mt-0.5 group-hover/feature:scale-110 transition-transform">
+                      <Check className="w-3 h-3 text-amber-300" />
                     </div>
-                    <span className="text-amber-50/80 text-sm sm:text-base group-hover/feature:text-amber-200 transition-colors">
+                    <span className="text-slate-800 text-sm sm:text-base group-hover/feature:text-slate-900 transition-colors">
                       {feature}
                     </span>
                   </li>
@@ -198,21 +227,21 @@ _Kindly contact me with availability and next steps._`;
                 onClick={() => setShowForm(plan)}
                 className={`relative w-full py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold transition-all duration-300 mt-auto overflow-hidden group/btn text-center ${
                   plan.mostPopular
-                    ? "bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 hover:shadow-lg hover:shadow-amber-500/30"
-                    : "bg-amber-900/50 border border-amber-700/50 text-amber-50 hover:bg-amber-800/50 hover:border-amber-500/50"
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-amber-50 hover:shadow-lg hover:shadow-amber-500/30"
+                    : "bg-amber-800/50 border border-amber-700/50 text-amber-50 hover:bg-amber-700/50 hover:border-amber-600/50"
                 }`}
               >
                 <span className="relative z-10">Reserve Now</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
               </button>
             </div>
           ))}
         </div>
 
         <div className="mt-8 sm:mt-12 text-center">
-          <p className="text-amber-100/70 text-base">
+          <p className="text-slate-800 text-base">
             Looking for custom catering?{" "}
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 underline decoration-amber-500/30 hover:decoration-amber-400 transition-all">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:text-amber-700 underline decoration-amber-500/30 hover:decoration-amber-400 transition-all">
               Contact our event team →
             </a>
           </p>

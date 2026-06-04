@@ -32,7 +32,7 @@ const fullMenu = {
     { name: "Tripe", description: "Traditional tripe prepared with herbs", price: "$5.00", spicy: false },
     { name: "Mopane Worms", description: "Protein-rich traditional delicacy", price: "$2.00", spicy: true },
   ],
-  "� Meats": [
+  "🥩 Meats": [
     { name: "Pork Chop", description: "Tender pork chop cooked with African herbs", price: "$5.00", spicy: true },
     { name: "Quarter Chicken", description: "Fresh quarter chicken grilled to perfection", price: "$5.00", spicy: false },
     { name: "Knuckle Bones", description: "Flavorful knuckle bones in rich gravy", price: "$5.00", spicy: true },
@@ -138,27 +138,30 @@ export default function FullMenuModal({ isOpen, setIsOpen }) {
             leaveFrom="opacity-100 scale-100 translate-y-0"
             leaveTo="opacity-0 scale-95 translate-y-4"
           >
-            <Dialog.Panel className="relative w-full max-w-4xl h-[85vh] bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <Dialog.Panel className="relative w-full max-w-4xl h-[85vh] bg-gradient-to-b from-amber-900 to-amber-950 border border-amber-700/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
               {/* Header */}
               <div className="relative p-4 sm:p-6 border-b border-amber-700/30 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
-                  <Dialog.Title className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
+                  <Dialog.Title className="text-xl sm:text-2xl font-bold text-amber-50" style={{
+                    fontFamily: "'Fredoka', system-ui, sans-serif",
+                    fontWeight: 800,
+                  }}>
                     📋 Full Menu
                   </Dialog.Title>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-amber-800/50 rounded-full transition-all">
-                    <X className="w-5 h-5 text-amber-400" />
+                    <X className="w-5 h-5 text-amber-50" />
                   </button>
                 </div>
 
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search dishes, categories, prices..."
-                    className="w-full pl-10 pr-4 py-3 bg-amber-800/30 border border-amber-700/50 rounded-xl text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 bg-amber-900/50 border border-amber-700/50 rounded-xl text-amber-50 placeholder-amber-400/50 focus:outline-none focus:border-amber-500 transition-all text-sm"
                     autoFocus
                   />
                 </div>
@@ -168,38 +171,41 @@ export default function FullMenuModal({ isOpen, setIsOpen }) {
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin">
                 {Object.entries(grouped).length === 0 ? (
                   <div className="text-center py-16">
-                    <p className="text-amber-400 text-lg">No dishes found</p>
-                    <p className="text-amber-500/70 text-sm mt-1">Try a different search term</p>
+                    <p className="text-amber-50 text-lg">No dishes found</p>
+                    <p className="text-amber-50/70 text-sm mt-1">Try a different search term</p>
                   </div>
                 ) : (
                   Object.entries(grouped).map(([category, items]) => (
                     <div key={category} className="mb-8 last:mb-0">
-                      <h3 className="text-lg font-bold text-amber-300 mb-3 flex items-center gap-2 sticky top-0 bg-amber-950/90 backdrop-blur-sm py-2 z-10">
+                      <h3 className="text-lg font-bold text-amber-50 mb-3 flex items-center gap-2 sticky top-0 bg-amber-950/90 backdrop-blur-sm py-2 z-10" style={{
+                        fontFamily: "'Fredoka', system-ui, sans-serif",
+                        fontWeight: 700,
+                      }}>
                         <Sparkles className="w-4 h-4" />
                         {category}
-                        <span className="text-xs text-amber-500/70 font-normal">({items.length})</span>
+                        <span className="text-xs text-amber-50/70 font-normal">({items.length})</span>
                       </h3>
                       <div className="space-y-2">
                         {items.map((item, i) => (
                           <div
                             key={`${item.name}-${i}`}
-                            className="group flex items-center justify-between bg-amber-900/20 border border-amber-700/20 rounded-xl px-4 py-3 hover:bg-amber-900/40 hover:border-amber-600/40 transition-all duration-200"
+                            className="group flex items-center justify-between bg-amber-800/30 border border-amber-700/30 rounded-xl px-4 py-3 hover:bg-amber-800/50 hover:border-amber-600/50 transition-all duration-200"
                           >
                             <div className="flex-1 min-w-0 mr-3">
                               <div className="flex items-center gap-2">
                                 <h4 className="font-medium text-amber-50 text-sm capitalize">{item.name}</h4>
-                                {item.spicy && <Flame className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />}
+                                {item.spicy && <Flame className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />}
                               </div>
-                              <p className="text-xs text-amber-400/70 mt-0.5 truncate">{item.description}</p>
+                              <p className="text-xs text-amber-50/70 mt-0.5 truncate">{item.description}</p>
                             </div>
                             <div className="flex items-center gap-3 flex-shrink-0">
-                              <span className="text-amber-400 font-bold text-sm whitespace-nowrap">{item.price}</span>
+                              <span className="text-amber-300 font-bold text-sm whitespace-nowrap">{item.price}</span>
                               <button
                                 onClick={() => addItem(item)}
                                 className="p-2 bg-amber-700/50 hover:bg-amber-600/50 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
                                 title="Add to cart"
                               >
-                                <Plus className="w-4 h-4 text-amber-300" />
+                                <Plus className="w-4 h-4 text-amber-50" />
                               </button>
                             </div>
                           </div>

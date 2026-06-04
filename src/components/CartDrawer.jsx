@@ -1,25 +1,27 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { X, Trash2, Plus, Minus, Send, Phone, Loader2, User, MapPin, FileText } from "lucide-react";
+import { X, Trash2, Plus, Minus, Send, Phone, Loader2, User, MapPin, FileText, CreditCard, ShoppingBag, Mail } from "lucide-react";
 import { useCart } from "../CartContent";
+import { useLoyalty } from "../LoyaltyContext";
 import { toast } from "react-hot-toast";
 
 const WHATSAPP_NUMBER = "263772682771";
 const WHATSAPP_API = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=`;
 
-function formatOrderMessage(cart, totalPrice, customer) {
+function formatOrderMessage(cart, totalPrice, customer, tip, discount, orderType, arrivalTime, selectedBranch) {
   let message = "🧾 *NEW ORDER - Kapoto Restaurant*\n";
   message += "═══════════════════════\n\n";
-  
-  // Customer details
   message += "*👤 CUSTOMER DETAILS:*\n";
   if (customer.name) message += `   • Name: ${customer.name}\n`;
-  if (customer.location) message += `   • Location: ${customer.location}\n`;
-  if (customer.notes) message += `   • Notes: ${customer.notes}\n`;
-  message += `   • Phone: ${WHATSAPP_NUMBER}\n\n`;
+  if (customer.email) message += `   • Email: ${customer.email}\n`;
+  if (customer.phone) message += `   • Phone: ${customer.phone}\n`;
+  if (customer.notes) message += `   • Notes: ${customer.notes}\n\n`;
+
+  message += `*🏪 Branch:* ${selectedBranch}\n`;
+  message += `*🍽️ Order Type:* ${orderType === 'sit-in' ? '🪑 Sit-In (Dine at Restaurant)' : '🥡 Takeaway (Collect & Go)'}\n`;
+  if (arrivalTime) message += `*⏰ Arrival Time:* ${arrivalTime}\n\n`;
   
   message += "*🍽️ ORDER ITEMS:*\n\n";
-
   cart.forEach((item, i) => {
     message += `*${i + 1}. ${item.name}*\n`;
     message += `   Qty: ${item.quantity} × $${item.priceNumber.toFixed(2)}\n`;
@@ -27,48 +29,59 @@ function formatOrderMessage(cart, totalPrice, customer) {
   });
 
   message += "═══════════════════════\n";
+  if (discount > 0) message += `   Discount: -$${discount.toFixed(2)}\n`;
+  if (tip > 0) message += `   Tip: +$${tip.toFixed(2)}\n`;
   message += `*📊 TOTAL: $${totalPrice.toFixed(2)}*\n`;
   message += "═══════════════════════\n\n";
-  message += "📍 *Ready for:* Delivery / Pickup\n";
-  message += "⏰ *Order Type:* Online Order\n";
   message += "💳 *Payment:* Pay on arrival\n\n";
   message += "_Thank you for choosing Kapoto! 🇿🇼✨_";
 
   return encodeURIComponent(message);
 }
 
-export default function CartDrawer({ isOpen, setIsOpen }) {
-  const {
-    cart,
-    totalPrice,
-    totalItems,
-    removeItem,
-    updateQuantity,
-    clearCart,
-  } = useCart();
+const tipOptions = [10, 15, 20, 25];
+
+const branches = [
+  { id: "avondale", name: "Avondale", address: "No.2 Chelmsford Road, Avondale" },
+  { id: "belvedere", name: "Belvedere", address: "Shop D129, Long chen Plaza, Belvedere" },
+  { id: "mutare", name: "Mutare", address: "Mutare, Zimbabwe" },
+];
+
+// Generate time options in 30-min intervals
+const timeOptions = [];
+for (let h = 7; h <= 21; h++) {
+  for (let m = 0; m < 60; m += 30) {
+    const hour = h.toString().padStart(2, '0');
+    const min = m.toString().padStart(2, '0');
+    timeOptions.push(`${hour}:${min}`);
+  }
+}
+
+export default function CartDrawer({ isOpen, setIsOpen, onCheckout }) {
+  const { cart, totalPrice, totalItems, removeItem, updateQuantity, clearCart } = useCart();
+  const { totalOrders, rewards } = useLoyalty();
   const [isSending, setIsSending] = useState(false);
-  const [customer, setCustomer] = useState({
-    name: "",
-    location: "",
-    notes: "",
-  });
+  const [tipPercentage, setTipPercentage] = useState(0);
+  const [customer, setCustomer] = useState({ name: "", email: "", phone: "", location: "", notes: "" });
+  const [orderType, setOrderType] = useState("takeaway"); // "takeaway" or "sit-in"
+  const [arrivalTime, setArrivalTime] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState(branches[0]);
+
+  const tipAmount = (totalPrice * tipPercentage) / 100;
+  const grandTotal = totalPrice + tipAmount;
 
   const sendToWhatsApp = () => {
     if (cart.length === 0) return;
     setIsSending(true);
-
-    const message = formatOrderMessage(cart, totalPrice, customer);
-    const url = WHATSAPP_API + message;
-
-    window.open(url, "_blank");
-
+    const message = formatOrderMessage(cart, grandTotal, customer, tipAmount, 0, orderType, arrivalTime, `${selectedBranch.name} - ${selectedBranch.address}`);
+    window.open(WHATSAPP_API + message, "_blank");
     setTimeout(() => {
-      toast.success("✅ Order sent to Kapoto via WhatsApp!", {
-        duration: 5000,
-        icon: "🎉",
-      });
+      toast.success("✅ Order sent via WhatsApp!", { duration: 5000, icon: "🎉" });
       clearCart();
-      setCustomer({ name: "", location: "", notes: "" });
+      setCustomer({ name: "", email: "", phone: "", location: "", notes: "" });
+      setTipPercentage(0);
+      setOrderType("takeaway");
+      setArrivalTime("");
       setIsOpen(false);
       setIsSending(false);
     }, 1000);
@@ -77,222 +90,236 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-[100]" onClose={() => setIsOpen(false)}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+        <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+          <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className="fixed inset-y-0 right-0 flex max-w-full">
-          <Transition.Child
-            as={Fragment}
-            enter="transform transition ease-in-out duration-500"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="transform transition ease-in-out duration-300"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
-          >
-            <Dialog.Panel className="relative w-screen max-w-md bg-gradient-to-b from-amber-950 via-amber-900 to-amber-950 text-amber-50 shadow-2xl flex flex-col border-l border-amber-700/50">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-              </div>
-
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95 translate-y-4" enterTo="opacity-100 scale-100 translate-y-0" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100 translate-y-0" leaveTo="opacity-0 scale-95 translate-y-4">
+            <Dialog.Panel className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
               {/* Header */}
-              <div className="relative flex items-center justify-between p-4 sm:p-6 border-b border-amber-700/50">
-                <Dialog.Title className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
-                  🛒 Your Order
-                </Dialog.Title>
+              <div className="relative px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-amber-50 to-white">
                 <div className="flex items-center gap-3">
-                  {totalItems > 0 && (
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-amber-950 text-xs font-bold animate-bounce">
-                      {totalItems}
-                    </span>
-                  )}
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-amber-800/50 rounded-full transition-all duration-200 hover:rotate-90"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-amber-700" />
+                  </div>
+                  <div>
+                    <Dialog.Title className="text-lg font-bold text-gray-900">Your Order</Dialog.Title>
+                    <p className="text-xs text-gray-500">{totalItems} item{totalItems !== 1 ? "s" : ""}</p>
+                  </div>
                 </div>
+                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-all text-gray-400 hover:text-gray-600">
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              {/* Body */}
-              <div className="relative flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 scrollbar-thin">
+              {/* Body - scrollable */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin bg-gray-50/50">
                 {cart.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center py-20">
-                    <div className="text-6xl mb-4 animate-bounce">🍽️</div>
-                    <p className="text-amber-300 text-lg font-medium">
-                      Your cart is empty
-                    </p>
-                    <p className="text-amber-500 text-sm mt-1">
-                      Add some delicious African cuisine!
-                    </p>
+                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+                      <ShoppingBag className="w-8 h-8 text-amber-500" />
+                    </div>
+                    <p className="text-gray-900 text-lg font-semibold">Your cart is empty</p>
+                    <p className="text-gray-500 text-sm mt-1">Add some delicious African cuisine!</p>
+                    <button onClick={() => setIsOpen(false)} className="mt-6 px-6 py-2.5 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition-all">
+                      Browse Menu
+                    </button>
                   </div>
                 ) : (
                   <>
-                    {/* Customer Details Section */}
-                    <div className="bg-amber-900/30 border border-amber-700/30 rounded-xl p-4 space-y-3">
-                      <h4 className="text-sm font-semibold text-amber-300 flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        Your Details
+                    {/* Customer Details */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                      <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <User className="w-4 h-4 text-amber-600" /> Contact Information
                       </h4>
-                      
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
-                        <input
-                          type="text"
-                          value={customer.name}
-                          onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                          placeholder="Your Name *"
-                          className="w-full pl-10 pr-4 py-2.5 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all text-sm"
-                        />
-                      </div>
-
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
-                        <input
-                          type="text"
-                          value={customer.location}
-                          onChange={(e) => setCustomer({ ...customer, location: e.target.value })}
-                          placeholder="Delivery Location (e.g. Avondale, Harare)"
-                          className="w-full pl-10 pr-4 py-2.5 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all text-sm"
-                        />
-                      </div>
-
-                      <div className="relative">
-                        <FileText className="absolute left-3 top-3 w-4 h-4 text-amber-500" />
-                        <textarea
-                          value={customer.notes}
-                          onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
-                          placeholder="Additional notes (allergies, special requests, etc.)"
-                          rows={2}
-                          className="w-full pl-10 pr-4 py-2.5 bg-amber-800/30 border border-amber-700 rounded-lg text-amber-50 placeholder-amber-600 focus:outline-none focus:border-amber-500 transition-all text-sm resize-none"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                            placeholder="Full Name *" className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm" />
+                        </div>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="email" value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                            placeholder="Email address" className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm" />
+                        </div>
+                        <div className="relative sm:col-span-2">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" value={customer.location} onChange={(e) => setCustomer({ ...customer, location: e.target.value })}
+                            placeholder="Delivery address" className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm" />
+                        </div>
+                        <div className="relative sm:col-span-2">
+                          <FileText className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                          <textarea value={customer.notes} onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
+                            placeholder="Special instructions, allergies, etc."
+                            rows={2} className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm resize-none" />
+                        </div>
                       </div>
                     </div>
 
-                    {cart.map((item, index) => (
-                      <div
-                        key={item.name}
-                        className="group relative flex items-start gap-3 sm:gap-4 bg-amber-900/30 border border-amber-700/30 rounded-xl p-3 sm:p-4 hover:bg-amber-900/50 hover:border-amber-600/50 transition-all duration-300 animate-in slide-in-from-bottom"
-                        style={{ animationDelay: `${index * 80}ms` }}
-                      >
-                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0 border border-amber-700/50">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-amber-950/50 to-transparent" />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-semibold text-amber-50 text-sm sm:text-base capitalize truncate">
-                              {item.name}
-                            </h4>
-                            <button
-                              onClick={() => removeItem(item.name)}
-                              className="p-1 text-amber-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0"
-                            >
-                              <Trash2 className="w-4 h-4" />
+                    {/* Order Type & Branch */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                      <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <ShoppingBag className="w-4 h-4 text-amber-600" /> Order Preferences
+                      </h4>
+                      <div className="space-y-4">
+                        {/* Takeaway / Sit-In Toggle */}
+                        <div>
+                          <label className="text-xs text-gray-500 font-semibold mb-2 block">Order Type:</label>
+                          <div className="flex gap-2">
+                            <button onClick={() => setOrderType("takeaway")}
+                              className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                                orderType === "takeaway"
+                                  ? "bg-amber-600 text-white shadow-md"
+                                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                              }`}>
+                              🥡 Takeaway
+                            </button>
+                            <button onClick={() => setOrderType("sit-in")}
+                              className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                                orderType === "sit-in"
+                                  ? "bg-amber-600 text-white shadow-md"
+                                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                              }`}>
+                              🪑 Sit-In
                             </button>
                           </div>
-                          <p className="text-xs text-amber-400 truncate mt-0.5">
-                            {item.description}
-                          </p>
+                        </div>
 
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center gap-1 bg-amber-800/50 rounded-lg p-1">
-                              <button
-                                onClick={() => updateQuantity(item.name, item.quantity - 1)}
-                                className="p-1.5 hover:bg-amber-700/50 rounded-md transition-all duration-200 hover:scale-110 active:scale-95"
-                              >
-                                <Minus className="w-3.5 h-3.5" />
-                              </button>
-                              <span className="px-2 text-sm font-bold min-w-[20px] text-center text-amber-200">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => updateQuantity(item.name, item.quantity + 1)}
-                                className="p-1.5 hover:bg-amber-700/50 rounded-md transition-all duration-200 hover:scale-110 active:scale-95"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
+                        {/* Branch Selection */}
+                        <div>
+                          <label className="text-xs text-gray-500 font-semibold mb-2 block">Select Branch:</label>
+                          <select value={selectedBranch.id} onChange={(e) => setSelectedBranch(branches.find(b => b.id === e.target.value))}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm">
+                            {branches.map(b => <option key={b.id} value={b.id}>{b.name} - {b.address}</option>)}
+                          </select>
+                        </div>
 
-                            <span className="text-sm font-bold text-amber-300">
-                              ${(item.priceNumber * item.quantity).toFixed(2)}
-                            </span>
+                        {/* Arrival Time */}
+                        <div>
+                          <label className="text-xs text-gray-500 font-semibold mb-2 block">What time will you arrive?</label>
+                          <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1 border border-gray-100 rounded-lg">
+                            {timeOptions.map(time => (
+                              <button key={time} onClick={() => setArrivalTime(arrivalTime === time ? "" : time)}
+                                className={`py-1.5 px-2 rounded text-xs font-semibold transition-all ${
+                                  arrivalTime === time
+                                    ? "bg-amber-600 text-white"
+                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                                }`}>
+                                {time}
+                              </button>
+                            ))}
                           </div>
+                          {arrivalTime && (
+                            <p className="text-xs text-amber-700 mt-1 font-semibold">🕐 Arriving at {arrivalTime}</p>
+                          )}
+                        </div>
+
+                        {/* Phone Number */}
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="tel" value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
+                            placeholder="Phone Number" className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-sm" />
                         </div>
                       </div>
-                    ))}
+                    </div>
+
+                    {/* Order Items */}
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                      <div className="px-5 py-4 border-b border-gray-50">
+                        <h4 className="text-sm font-bold text-gray-900">Order Items</h4>
+                      </div>
+                      <div className="divide-y divide-gray-50">
+                        {cart.map((item, index) => (
+                          <div key={item.name} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50/50 transition-colors">
+                            <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 text-sm capitalize">{item.name}</h4>
+                              <p className="text-xs text-gray-400 truncate">{item.description}</p>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <button onClick={() => updateQuantity(item.name, item.quantity - 1)} className="p-1 rounded-md hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all"><Minus className="w-3.5 h-3.5" /></button>
+                                <span className="text-sm font-bold text-gray-900 min-w-[20px] text-center">{item.quantity}</span>
+                                <button onClick={() => updateQuantity(item.name, item.quantity + 1)} className="p-1 rounded-md hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all"><Plus className="w-3.5 h-3.5" /></button>
+                              </div>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className="font-bold text-gray-900 text-sm">${(item.priceNumber * item.quantity).toFixed(2)}</p>
+                              <button onClick={() => removeItem(item.name)} className="text-xs text-red-400 hover:text-red-600 transition-colors mt-0.5"><Trash2 className="w-3.5 h-3.5 inline" /> Remove</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Tip Section */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                      <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="text-amber-600">💝</span> Add a Tip
+                      </h4>
+                      <div className="flex gap-2 flex-wrap">
+                        {tipOptions.map((pct) => (
+                          <button key={pct} onClick={() => setTipPercentage(tipPercentage === pct ? 0 : pct)}
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                              tipPercentage === pct ? "bg-amber-600 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            }`}>
+                            {pct}%
+                          </button>
+                        ))}
+                        <div className="flex-1 min-w-[100px]">
+                          <input type="text" value={tipPercentage > 0 ? `$${tipAmount.toFixed(2)}` : "$0.00"} readOnly
+                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-sm font-semibold text-center" />
+                        </div>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
 
-              {/* Footer */}
-              <div className="relative border-t border-amber-700/50 p-4 sm:p-6 bg-gradient-to-t from-amber-950 to-amber-900/50">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-amber-300">Subtotal ({totalItems} items)</span>
-                  <span className="text-lg font-bold text-amber-200">
-                    ${totalPrice.toFixed(2)}
-                  </span>
+              {/* Footer - Order Summary */}
+              <div className="border-t border-gray-100 bg-white px-6 py-5 space-y-4">
+                {/* Price breakdown */}
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>${totalPrice.toFixed(2)}</span></div>
+                  {tipAmount > 0 && <div className="flex justify-between text-gray-600"><span>Tip ({tipPercentage}%)</span><span>+${tipAmount.toFixed(2)}</span></div>}
+                  <div className="flex justify-between text-green-600"><span>Loyalty orders</span><span>{totalOrders} orders</span></div>
+                  <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-100"><span>Total</span><span>${grandTotal.toFixed(2)}</span></div>
                 </div>
 
-                <div className="text-xs text-amber-500 mb-4 flex items-center gap-1">
-                  <Phone className="w-3 h-3" />
-                  <span>Order will be sent via WhatsApp</span>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={sendToWhatsApp}
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      if (onCheckout) onCheckout();
+                      else sendToWhatsApp();
+                    }} 
                     disabled={cart.length === 0 || isSending || !customer.name}
-                    className="group relative w-full py-3 sm:py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                    className="flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {isSending ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                          Order via WhatsApp 🚀
-                        </>
-                      )}
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                    {isSending ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                    ) : (
+                      <><CreditCard className="w-4 h-4" /> Pay & Checkout 💳</>
+                    )}
                   </button>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={clearCart}
-                      disabled={cart.length === 0}
-                      className="flex-1 py-2.5 bg-amber-800/50 hover:bg-amber-700/50 text-amber-300 font-medium rounded-lg transition-all duration-200 disabled:opacity-50 border border-amber-700/30 text-sm"
-                    >
-                      Clear Cart
-                    </button>
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="flex-1 py-2.5 bg-amber-800/30 hover:bg-amber-700/30 text-amber-200 font-medium rounded-lg transition-all duration-200 border border-amber-700/30 text-sm"
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
+                  
+                  <button 
+                    onClick={sendToWhatsApp} 
+                    disabled={cart.length === 0 || isSending || !customer.name}
+                    className="flex-1 py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2"
+                  >
+                    {isSending ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                    ) : (
+                      <><Send className="w-4 h-4" /> Order via WhatsApp 🚀</>
+                    )}
+                  </button>
                 </div>
+
+                <p className="text-xs text-gray-400 text-center">
+                  💳 Secure checkout with card/EcoCash/GooglePay or 📱 Quick order via WhatsApp
+                </p>
               </div>
             </Dialog.Panel>
           </Transition.Child>
