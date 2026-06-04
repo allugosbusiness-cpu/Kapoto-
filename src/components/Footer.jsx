@@ -184,8 +184,8 @@ export default function Footer() {
               © 2026 Kapoto Restaurant. All rights reserved.
             </p>
             <div className="flex items-center space-x-4 sm:space-x-6 text-xs sm:text-sm">
-              <a href="#" className="text-amber-50/60 hover:text-amber-50 transition-colors">Privacy Policy</a>
-              <a href="#" className="text-amber-50/60 hover:text-amber-50 transition-colors">Terms of Service</a>
+              <button onClick={() => openLegal("Privacy")} className="text-amber-50/60 hover:text-amber-50 transition-colors bg-transparent border-0 cursor-pointer">Privacy Policy</button>
+              <button onClick={() => openLegal("Terms")} className="text-amber-50/60 hover:text-amber-50 transition-colors bg-transparent border-0 cursor-pointer">Terms of Service</button>
               <span className="text-amber-500/30">|</span>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="text-amber-400/50 hover:text-amber-300 transition-colors text-[10px]">Built with ❤️ by Allugostech</a>
             </div>
