@@ -10,13 +10,15 @@ import {
   updateProfile,
 } from "firebase/auth";
 
+// Firebase configuration - API keys are safe to embed in client-side code
+// They are restricted in the Firebase Console by allowed domains
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-mode",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-mode.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-mode",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-mode.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "000000000000",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:000000000000:web:0000000000000000000000",
+  apiKey: "AIzaSyCCwLxiVNCSc3plwSXw5dFMLp5G7sIiIJI",
+  authDomain: "kapotorestaurant-1bca2.firebaseapp.com",
+  projectId: "kapotorestaurant-1bca2",
+  storageBucket: "kapotorestaurant-1bca2.firebasestorage.app",
+  messagingSenderId: "786173672495",
+  appId: "1:786173672495:web:c000b18d98af42ec8e5ada",
 };
 
 const app = initializeApp(firebaseConfig);
