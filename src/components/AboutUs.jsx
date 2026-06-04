@@ -6,9 +6,9 @@ export default function AboutUs() {
   const sectionRef = useRef(null);
   const carouselImages = [
     "/1.png", "/2.png", "/3.png", "/4.png",
-    "/moms.png", "/bhifi.png", "/mabhonzo.jpg",
-    "/INTERIOR.png", "/Annotation 2026-02-05 174709.png",
-    "/bones.jpg", "/fish.png", "/maheu.png", "/sadza.jpg"
+    "/bhifi.png", "/mabhonzo.jpg",
+    "/Annotation 2026-02-05 174709.png",
+    "/INTERIOR.png", "/Annotation 2026-02-05 174030.png"
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
