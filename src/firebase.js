@@ -10,16 +10,16 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-// Firebase configuration - reads from .env variables
+// Firebase configuration
 // API keys are safe to embed in client-side code
 // They are restricted in the Firebase Console by allowed domains
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyCCwLxiVNCSc3plwSXw5dFMLp5G7sIiIJI",
+  authDomain: "kapotorestaurant-1bca2.firebaseapp.com",
+  projectId: "kapotorestaurant-1bca2",
+  storageBucket: "kapotorestaurant-1bca2.firebasestorage.app",
+  messagingSenderId: "786173672495",
+  appId: "1:786173672495:web:c000b18d98af42ec8e5ada",
 };
 
 const app = initializeApp(firebaseConfig);
