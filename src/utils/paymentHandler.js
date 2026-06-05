@@ -26,7 +26,17 @@ export const PAYMENT_METHODS = {
   },
 };
 
-// Initialize Stripe
+// API base URL - uses Vercel proxy in production, local dev server fallback
+function getApiBase() {
+  // In production (Vercel), API routes are on the same origin
+  // In local dev, we use the Vite proxy or the full URL
+  if (import.meta.env.DEV) {
+    return window.location.origin;
+  }
+  return window.location.origin; // Same origin on Vercel
+}
+
+// Initialize Stripe (fallback for future use)
 let stripePromise = null;
 function getStripe() {
   if (!stripePromise) {
@@ -36,6 +46,18 @@ function getStripe() {
     }
   }
   return stripePromise;
+}
+
+// Check if Paynow is properly configured (real keys provided)
+function isPaynowConfigured() {
+  const integrationId = import.meta.env.VITE_PAYNOW_INTEGRATION_ID;
+  const integrationKey = import.meta.env.VITE_PAYNOW_INTEGRATION_KEY;
+  return (
+    integrationId &&
+    integrationKey &&
+    integrationId !== "your_paynow_integration_id" &&
+    integrationKey !== "your_paynow_integration_key"
+  );
 }
 
 // Process payment through the appropriate gateway
@@ -48,7 +70,6 @@ export async function processPayment(paymentData) {
 
   switch (method) {
     case "credit_card":
-      // Card also goes through Paynow for secure hosted page
       return await processCardPayment(amount, order, onPollStatus);
     case "ecocash":
       return await processEcoCashPayment(amount, order, ecocashNumber, onPollStatus);
@@ -65,80 +86,63 @@ async function processCardPayment(amount, order, onPollStatus) {
   const stripe = await getStripe();
   if (stripe) {
     try {
-      // Stripe integration would go here with PaymentElement
-      // For now, fall through to Paynow
       console.log("Stripe configured, would use Stripe Elements");
     } catch {
       // Fall through to Paynow
     }
   }
 
-  // Use Paynow for card payments - same flow as EcoCash but without phone number
-  // Paynow's hosted page handles all card entry securely
-  const integrationId = import.meta.env.VITE_PAYNOW_INTEGRATION_ID;
-  const integrationKey = import.meta.env.VITE_PAYNOW_INTEGRATION_KEY;
-
-  if (integrationId && integrationKey && 
-      integrationId !== "your_paynow_integration_id" && 
-      integrationKey !== "your_paynow_integration_key") {
-    return await processCardViaPaynow(amount, order, integrationId, integrationKey, onPollStatus);
+  if (isPaynowConfigured()) {
+    return await cardViaPaynow(amount, order, onPollStatus);
   }
 
-  // Fallback: simulate card via Paynow
-  return simulateCardViaPaynow(amount, order, onPollStatus);
+  return simulateCardPayment(amount, order, onPollStatus);
 }
 
-// Process card payment through Paynow's hosted checkout page
-async function processCardViaPaynow(amount, order, integrationId, integrationKey, onPollStatus) {
+// Card payment through our API proxy (solves CORS)
+async function cardViaPaynow(amount, order, onPollStatus) {
   const reference = `KAPOTO-CARD-${Date.now()}`;
-  const paynowUrl = "https://www.paynow.co.zw/interface/initiatetransaction";
 
-  // Paynow will show a hosted payment page where user can select "Card" option
-  const paymentData = {
-    result_url: window.location.origin + "/payment-result",
-    return_url: window.location.origin + "/payment-success",
-    reference,
-    amount: amount.toFixed(2),
-    id: integrationId,
-    additionalinfo: `Kapoto Card Order - ${order?.customerName || "Customer"}`,
-    authemail: order?.customerEmail || "customer@kapoto.com",
-    status: "Message",
-  };
+  if (onPollStatus) onPollStatus("initiating", "Initiating payment...");
 
-  const response = await fetch(paynowUrl, {
+  // Step 1: Initiate payment through our API proxy
+  const initiateResponse = await fetch(`${getApiBase()}/api/paynow-initiate`, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(paymentData),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      reference,
+      amount: amount.toFixed(2),
+      integrationId: import.meta.env.VITE_PAYNOW_INTEGRATION_ID,
+      integrationKey: import.meta.env.VITE_PAYNOW_INTEGRATION_KEY,
+      email: order?.customerEmail || "customer@kapoto.com",
+      orderType: order?.customerName || "Customer",
+    }),
   });
 
-  const responseText = await response.text();
-  const parsed = parsePaynowResponse(responseText);
-
-  if (parsed.status !== "ok") {
-    throw new Error(parsed.error || "Card payment initiation failed.");
+  if (!initiateResponse.ok) {
+    const errorData = await initiateResponse.json();
+    throw new Error(errorData.error || "Card payment initiation failed.");
   }
 
-  // Notify UI that we're redirecting
+  const paymentData = await initiateResponse.json();
+
   if (onPollStatus) onPollStatus("redirecting", "Opening secure payment page...");
 
-  // Open Paynow's hosted payment page where user can pay with card
-  if (parsed.browserurl) {
-    window.open(parsed.browserurl, "_blank", "width=800,height=700");
+  // Open Paynow's hosted payment page
+  if (paymentData.browserurl) {
+    window.open(paymentData.browserurl, "_blank", "width=800,height=700");
   }
 
-  const pollUrl = parsed.pollurl;
-  if (!pollUrl) {
+  if (!paymentData.pollurl) {
     throw new Error("Paynow did not provide a status URL.");
   }
 
-  // Poll for payment confirmation
-  const transaction = await pollPaymentStatus(pollUrl, reference, amount, order, onPollStatus);
-
-  return transaction;
+  // Step 2: Poll for payment confirmation through our proxy
+  return await pollViaProxy(paymentData.pollurl, reference, amount, order, onPollStatus);
 }
 
-// Simulate card payment via Paynow-style hosted page
-function simulateCardViaPaynow(amount, order, onPollStatus) {
+// Card simulation fallback
+function simulateCardPayment(amount, order, onPollStatus) {
   return new Promise((resolve, reject) => {
     if (onPollStatus) onPollStatus("waiting_for_pin", "Opening secure payment page...");
 
@@ -191,73 +195,74 @@ async function processEcoCashPayment(amount, order, ecocashNumber, onPollStatus)
 
   const cleanNumber = ecocashNumber.replace(/\D/g, "");
 
-  const integrationId = import.meta.env.VITE_PAYNOW_INTEGRATION_ID;
-  const integrationKey = import.meta.env.VITE_PAYNOW_INTEGRATION_KEY;
-
-  if (integrationId && integrationKey && 
-      integrationId !== "your_paynow_integration_id" && 
-      integrationKey !== "your_paynow_integration_key") {
-    return await processEcoCashViaPaynow(amount, order, cleanNumber, integrationId, integrationKey, onPollStatus);
+  if (isPaynowConfigured()) {
+    return await ecocashViaPaynow(amount, order, cleanNumber, onPollStatus);
   }
 
   return simulateEcoCashPayment(amount, order, cleanNumber, onPollStatus);
 }
 
-async function processEcoCashViaPaynow(amount, order, phoneNumber, integrationId, integrationKey, onPollStatus) {
+// EcoCash through our API proxy (solves CORS)
+async function ecocashViaPaynow(amount, order, phoneNumber, onPollStatus) {
   const reference = `KAPOTO-ECO-${Date.now()}`;
-  const paynowUrl = "https://www.paynow.co.zw/interface/initiatetransaction";
 
-  const paymentData = {
-    result_url: window.location.origin + "/payment-result",
-    return_url: window.location.origin + "/payment-success",
-    reference,
-    amount: amount.toFixed(2),
-    id: integrationId,
-    additionalinfo: `Kapoto Order - ${order?.customerName || "Customer"}`,
-    authemail: order?.customerEmail || "customer@kapoto.com",
-    status: "Message",
-    phone: phoneNumber,
-  };
+  if (onPollStatus) onPollStatus("initiating", "Initiating EcoCash payment...");
 
-  const response = await fetch(paynowUrl, {
+  // Step 1: Initiate payment through our API proxy
+  const initiateResponse = await fetch(`${getApiBase()}/api/paynow-initiate`, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(paymentData),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      reference,
+      amount: amount.toFixed(2),
+      integrationId: import.meta.env.VITE_PAYNOW_INTEGRATION_ID,
+      integrationKey: import.meta.env.VITE_PAYNOW_INTEGRATION_KEY,
+      phone: phoneNumber,
+      email: order?.customerEmail || "customer@kapoto.com",
+      orderType: order?.customerName || "Customer",
+    }),
   });
 
-  const responseText = await response.text();
-  const parsed = parsePaynowResponse(responseText);
-
-  if (parsed.status !== "ok") {
-    throw new Error(parsed.error || "EcoCash payment initiation failed.");
+  if (!initiateResponse.ok) {
+    const errorData = await initiateResponse.json();
+    throw new Error(errorData.error || "EcoCash payment initiation failed.");
   }
+
+  const paymentData = await initiateResponse.json();
 
   if (onPollStatus) onPollStatus("waiting_for_pin", "Check your phone and enter your EcoCash PIN");
 
-  const pollUrl = parsed.pollurl;
-  if (!pollUrl) {
+  if (!paymentData.pollurl) {
     throw new Error("Paynow did not provide a status URL.");
   }
 
-  const transaction = await pollPaymentStatus(pollUrl, reference, amount, order, onPollStatus);
-
-  return transaction;
+  // Step 2: Poll for payment confirmation through our proxy
+  return await pollViaProxy(paymentData.pollurl, reference, amount, order, onPollStatus);
 }
 
-// ============== POLL PAYNOW STATUS (shared by Card & EcoCash) ==============
-async function pollPaymentStatus(pollUrl, reference, amount, order, onPollStatus) {
+// ============== POLL PAYNOW STATUS (via our proxy to avoid CORS) ==============
+async function pollViaProxy(pollUrl, reference, amount, order, onPollStatus) {
   const maxAttempts = 30;
   const pollInterval = 5000;
+  const apiBase = getApiBase();
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
-      const statusResponse = await fetch(pollUrl);
-      const statusText = await statusResponse.text();
-      const status = parsePaynowResponse(statusText);
+      // Poll through our API proxy
+      const pollResponse = await fetch(`${apiBase}/api/paynow-poll`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: pollUrl }),
+      });
 
+      if (!pollResponse.ok) {
+        throw new Error("Poll request failed");
+      }
+
+      const status = await pollResponse.json();
       console.log(`Paynow poll attempt ${attempt + 1}:`, status);
 
-      if (status.status === "paid") {
+      if (status.paid) {
         if (onPollStatus) onPollStatus("confirmed", "Payment received!");
 
         const transaction = {
